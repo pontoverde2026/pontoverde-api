@@ -1,0 +1,72 @@
+[
+  {
+    "nome": "Ecoponto Central - Eletrônicos",
+    "tipo": "eletronico",
+    "endereco": "Rua Principal, 100",
+    "lat": -22.731,
+    "lng": -45.120
+  },
+  {
+    "nome": "Descarte Tech Lorena",
+    "tipo": "eletronico",
+    "endereco": "Av. Peixoto de Castro, 800",
+    "lat": -22.735,
+    "lng": -45.118
+  },
+  {
+    "nome": "Galpão de Madeiras e Móveis",
+    "tipo": "movel",
+    "endereco": "Rua das Indústrias, 45",
+    "lat": -22.740,
+    "lng": -45.125
+  },
+  {
+    "nome": "Caçamba Comunitária - Vila Z",
+    "tipo": "movel",
+    "endereco": "Praça da Vila Z, s/n",
+    "lat": -22.728,
+    "lng": -45.110
+  },
+  {
+    "nome": "Aterro de Resíduos Civis",
+    "tipo": "entulho",
+    "endereco": "Estrada Velha, Km 2",
+    "lat": -22.745,
+    "lng": -45.130
+  },
+  {
+    "nome": "Ponto de Coleta de Obras",
+    "tipo": "entulho",
+    "endereco": "Rua dos Pedreiros, 12",
+    "lat": -22.733,
+    "lng": -45.115
+  },
+  {
+    "nome": "Supermercado - Coleta de Óleo",
+    "tipo": "oleo",
+    "endereco": "Av. Targino Vilela Nunes, 300",
+    "lat": -22.738,
+    "lng": -45.122
+  },
+  {
+    "nome": "Posto Ecológico",
+    "tipo": "oleo",
+    "endereco": "Rodovia Dutra, Km 53",
+    "lat": -22.725,
+    "lng": -45.105
+  },
+  {
+    "nome": "Loja de Materiais Elétricos",
+    "tipo": "lampada",
+    "endereco": "Rua do Comércio, 55",
+    "lat": -22.732,
+    "lng": -45.121
+  },
+  {
+    "nome": "Reciclagem Luminosa",
+    "tipo": "lampada",
+    "endereco": "Travessa das Luzes, 7",
+    "lat": -22.736,
+    "lng": -45.116
+  }
+]
