@@ -23,6 +23,18 @@ const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 // Conexão Supabase
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+// Calcula a distância real na superfície da Terra entre duas coordenadas
+function calcularDistancia(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Raio da Terra em km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
 // --- ROTA DE INTEGRAÇÃO ---
 app.post("/pesquisar", async (req, res) => {
     // Captura o input do usuário vindo do fetch() da barra de pesquisa 
@@ -44,20 +56,38 @@ app.post("/pesquisar", async (req, res) => {
         console.log(`---------------------\n`);
 
         // 2. Módulo de Busca: Filtro Direto na Nuvem (Supabase)
-        // O .eq atua exatamente como o antigo .filter() da sua Array local
         const { data: locaisProximos, error } = await supabase
-            .from('Ecopontos_lorena') // Nome exato da tabela no Supabase
+            .from('Ecopontos_lorena') 
             .select('*')
             .eq('tipo', categoriaResposta); 
 
-        // Se a conexão com o Supabase falhar, ele aciona o Catch abaixo
+
         if (error) throw error; 
+
+        // --- NOVA LÓGICA: CÁLCULO DE DISTÂNCIA E ORDENAÇÃO ---
+        let dadosTratados = locaisProximos;
+
+        // Se o frontend enviou as coordenadas lat e lon no corpo da requisição
+        if (req.body.lat && req.body.lon) {
+            dadosTratados = locaisProximos.map(ponto => {
+                const dist = calcularDistancia(
+                    req.body.lat, 
+                    req.body.lon, 
+                    ponto.latitude, 
+                    ponto.longitude
+                );
+                return { ...ponto, distancia_km: dist };
+            });
+
+            // Ordena do mais próximo para o mais distante
+            dadosTratados.sort((a, b) => a.distancia_km - b.distancia_km);
+        }
 
         // 3. Resposta de Saída (Contrato em Laranja) 
         return res.json({
             "status": "sucesso",
             "mensagem_chat": `O item "${textoUsuario}" foi classificado como ${categoriaResposta}.`,
-            "dados_mapa": locaisProximos // Lista filtrada vinda da nuvem
+            "dados_mapa": dadosTratados // Enviamos a lista já ordenada e com as distâncias
         });
 
     } catch (error) {
