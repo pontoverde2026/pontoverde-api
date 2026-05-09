@@ -59,7 +59,7 @@ app.post("/pesquisar", async (req, res) => {
                 messages: [
                     {
                         role: "system",
-                        content: "Classifique o resíduo em uma palavra: [recicláveis, eletronico, movel, entulho, oleo, lampada]. Se o termo não for um objeto físico ou resíduo, responda 'invalido'. Responda apenas o JSON: {\"categoria\": \"valor\"}"
+                        content: "Você é um especialista em reciclagem. Classifique o item em UMA destas palavras EXATAS: [recicláveis, eletronico, movel, entulho, oleo, lampada]. Considere termos comuns e siglas (ex: 'pet' é 'recicláveis', 'tv' é 'eletronico', 'papel' é 'recicláveis'). Se o termo não for um resíduo físico de forma alguma, responda apenas 'invalido'. Responda APENAS o JSON: {\"categoria\": \"valor\"}"
                     },
                     { role: "user", content: termoNormalizado }
                 ],
@@ -85,7 +85,7 @@ app.post("/pesquisar", async (req, res) => {
 
         // 4. Módulo de Busca: Filtro no Supabase
         const { data: locaisProximos, error } = await supabase
-            .from('Ecopontos_lorena') 
+            .from('ecopontos_lorena') 
             .select('*')
             .eq('tipo', categoriaResposta); 
 
