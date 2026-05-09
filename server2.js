@@ -45,7 +45,7 @@ app.post("/pesquisar", async (req, res) => {
 
         // 1. VERIFICAÇÃO DE CACHE (Supabase)
         const { data: cacheExistente } = await supabase
-            .from('Cache_IA')
+            .from('cache_ia')
             .select('categoria')
             .eq('termo', termoNormalizado)
             .single();
@@ -73,7 +73,7 @@ app.post("/pesquisar", async (req, res) => {
             // 3. SALVAR NO CACHE (Apenas se for um material válido)
             if (categoriaResposta !== "invalido") {
                 await supabase
-                    .from('Cache_IA')
+                    .from('cache_ia')
                     .insert([{ termo: termoNormalizado, categoria: categoriaResposta }]);
             } else {
                 return res.json({
