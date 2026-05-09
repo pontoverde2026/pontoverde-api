@@ -26,7 +26,7 @@ app.post("/pesquisar", async (req, res) => {
 
     try {
         // 1. Módulo IA: Classificação (Controle em Roxo)
-        const systemPrompt = "Classifique em uma palavra: [eletronico, movel, entulho, oleo, lampada]. Responda apenas o JSON: {\"categoria\": \"valor\"}";
+        const systemPrompt = "Classifique em uma palavra: [recicláveis, eletronico, movel, entulho, oleo, lampada]. Responda apenas o JSON: {\"categoria\": \"valor\"}";
         
         // É aqui que mandamos a pergunta de fato para a IA:
         const result = await model.generateContent(`${systemPrompt} \n Item: ${textoUsuario}`);
