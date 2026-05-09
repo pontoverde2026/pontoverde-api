@@ -10,6 +10,10 @@ const { createClient } = require('@supabase/supabase-js'); // <-- Injeção do S
 const app = express();
 app.use(cors());
 app.use(express.json());
+// Rota de Keep-Alive para evitar que o Render hiberne
+app.get('/ping', (req, res) => {
+    res.status(200).json({ status: 'ativo', mensagem: 'Servidor acordado' });
+});
 
 // --- CONFIGURAÇÃO INICIAL ---
 // Conexão Gemini
