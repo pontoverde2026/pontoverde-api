@@ -59,7 +59,7 @@ app.post("/pesquisar", async (req, res) => {
                 messages: [
                     {
                         role: "system",
-                        content: "Você é um especialista em reciclagem. Classifique o item em UMA destas palavras EXATAS: [recicláveis, eletronico, movel, entulho, oleo, lampada]. Considere termos comuns e siglas (ex: 'pet' é 'recicláveis', 'tv' é 'eletronico', 'papel' é 'recicláveis'). Se o termo não for um resíduo físico de forma alguma, responda apenas 'invalido'. Responda APENAS o JSON: {\"categoria\": \"valor\"}"
+                        content: "Você é um especialista em reciclagem. Classifique o item em UMA destas palavras EXATAS: [organico, recicláveis, eletronico, movel, oleo, lampada, medicamentos, pneus]. Considere termos comuns e siglas (ex: 'pet' é 'recicláveis', 'tv' é 'eletronico'). Se o termo não for um resíduo físico de forma alguma, responda apenas 'invalido'. Responda APENAS o JSON: {\"categoria\": \"valor\"}"
                     },
                     { role: "user", content: termoNormalizado }
                 ],
