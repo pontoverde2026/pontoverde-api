@@ -41,7 +41,7 @@ app.post("/pesquisar", async (req, res) => {
     const termoNormalizado = textoUsuario.toLowerCase().trim();
 
     try {
-        let categoriaResposta; // Agora isso será sempre um ARRAY
+        let categoriaResposta;
 
         // 1. VERIFICAÇÃO DE CACHE (Supabase)
         const { data: cacheExistente } = await supabase
@@ -51,11 +51,10 @@ app.post("/pesquisar", async (req, res) => {
             .single();
 
         if (cacheExistente) {
-            // Transforma a string do banco (ex: "pneus,recicláveis") de volta em um array
-            categoriaResposta = cacheExistente.categoria.split(',');
+            categoriaResposta = cacheExistente.categoria;
             console.log(`[CACHE] Termo encontrado: ${termoNormalizado} -> ${categoriaResposta}`);
         } else {
-            // 2. Módulo IA: Groq (Llama 3.3 70B)
+            // 2. Módulo IA: Groq (Llama 3.1 8B)
             const chatCompletion = await groq.chat.completions.create({
                 messages: [
                     {
@@ -69,16 +68,13 @@ app.post("/pesquisar", async (req, res) => {
             });
 
             const respostaIA = JSON.parse(chatCompletion.choices[0].message.content);
-            
-            // CORREÇÃO 1: Pega a propriedade no plural (array)
-            categoriaResposta = respostaIA.categorias;
+            categoriaResposta = respostaIA.categoria;
 
-            // CORREÇÃO 2: Verifica se o array contém a palavra invalido
-            if (!categoriaResposta.includes("invalido")) {
-                // CORREÇÃO 3: Transforma o array em string separada por vírgula para salvar no banco
+            // 3. SALVAR NO CACHE (Apenas se for um material válido)
+            if (categoriaResposta !== "invalido") {
                 await supabase
                     .from('cache_ia')
-                    .insert([{ termo: termoNormalizado, categoria: categoriaResposta.join(',') }]);
+                    .insert([{ termo: termoNormalizado, categoria: categoriaResposta }]);
             } else {
                 return res.json({
                     "status": "erro",
@@ -88,7 +84,6 @@ app.post("/pesquisar", async (req, res) => {
         }
 
         // 4. Módulo de Busca: Filtro no Supabase
-        // O '.in' aceita o array diretamente
         const { data: locaisProximos, error } = await supabase
             .from('ecopontos_lorena') 
             .select('*')
@@ -115,8 +110,7 @@ app.post("/pesquisar", async (req, res) => {
 
         return res.json({
             "status": "sucesso",
-            // Ajuste na mensagem para exibir as categorias de forma limpa
-            "mensagem_chat": `O item "${textoUsuario}" foi classificado como: ${categoriaResposta.join(', ')}.`,
+            "mensagem_chat": `O item "${textoUsuario}" foi classificado como ${categoriaResposta}.`,
             "dados_mapa": dadosTratados
         });
 
