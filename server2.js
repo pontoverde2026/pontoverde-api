@@ -52,7 +52,7 @@ app.post("/pesquisar", async (req, res) => {
 
         if (cacheExistente) {
             // Transforma a string do banco (ex: "pneus,recicláveis") de volta em um array
-            categoriaResposta = cacheExistente.categoria.split(',');
+            categoriaResposta = cacheExistente.categoria.split(',').map(c => c.trim());
             console.log(`[CACHE] Termo encontrado: ${termoNormalizado} -> ${categoriaResposta}`);
         } else {
             // 2. Módulo IA: Groq (Llama 3.3 70B)
@@ -71,7 +71,7 @@ app.post("/pesquisar", async (req, res) => {
             const respostaIA = JSON.parse(chatCompletion.choices[0].message.content);
             
             // CORREÇÃO 1: Pega a propriedade no plural (array)
-            categoriaResposta = respostaIA.categorias;
+            categoriaResposta = respostaIA.categorias.map(c => c.trim());
 
             // CORREÇÃO 2: Verifica se o array contém a palavra invalido
             if (!categoriaResposta.includes("invalido")) {
